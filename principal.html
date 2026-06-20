@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGE - Carregando Ambiente...</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background: #0f172a; /* Slate 900 */
+            --surface: #1e293b;    /* Slate 800 */
+            --surface-card: #111827; /* Gray 900 */
+            --border: #334155;     /* Slate 700 */
+            --primary: #3b82f6;    /* Azul Flutter */
+            --primary-hover: #60a5fa;
+            --accent: #f59e0b;     /* Âmbar */
+            --text-main: #f8fafc;  /* Slate 50 */
+            --text-muted: #94a3b8; /* Slate 400 */
+            --code-bg: #020617;    /* Slate 950 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Container de Centralização */
+        .wrapper {
+            max-width: 650px;
+            margin: auto;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        /* Branding SGE */
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            background-color: var(--surface);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+        }
+
+        .brand img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .brand span {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--primary-hover);
+        }
+
+        /* Títulos Principais */
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        /* Caixa de Status - Terminal */
+        .terminal-box {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: left;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2.5rem;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-r { background-color: #ef4444; }
+        .dot-y { background-color: #eab308; }
+        .dot-g { background-color: #22c55e; }
+
+        .terminal-line {
+            color: #cbd5e1;
+            margin-bottom: 0.4rem;
+        }
+
+        .terminal-line span.accent { color: var(--accent); }
+        .terminal-line span.success { color: #22c55e; }
+
+        /* Barra de Progresso Dinâmica */
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            background-color: var(--surface);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-fill {
+            background-color: var(--primary);
+            height: 100%;
+            width: 0%; /* Começa em 0 */
+            border-radius: 4px;
+            box-shadow: 0 0 12px var(--primary);
+            /* Animação de carregamento travada em exatamente 10 segundos linear */
+            animation: loadProgress 10s linear forwards, pulseGlow 2s infinite alternate;
+        }
+
+        /* Rodapé de Créditos */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            background-color: var(--surface-card);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--primary-hover);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Botão Flutuante do WhatsApp */
+        .float-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 101;
+            transition: transform 0.2s ease;
+            background-color: #25d366;
+        }
+
+        .float-btn:hover { transform: scale(1.1); }
+        .float-icon { width: 30px; height: 30px; fill: #ffffff; }
+
+        /* Keyframes das Animações CSS */
+        @keyframes loadProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.9; box-shadow: 0 0 8px var(--primary); }
+            100% { opacity: 1; box-shadow: 0 0 16px var(--primary); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="brand">
+            <img src="logo.svg" alt="SGE Logo" onerror="this.style.display='none';">
+            <span>PROJETO SGE</span>
+        </div>
+
+        <h1>Compilando Ambiente...</h1>
+        <p class="subtitle">O Sistema de Geolocalização Educacional está preparando as ferramentas e dependências de hardware para a aula.</p>
+
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>Instalando pacotes via pubspec.yaml</span>
+                <span id="percent-text">0% Concluído</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="terminal-box">
+            <div class="terminal-header">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
+            </div>
+            <div class="terminal-line">$ flutter pub get</div>
+            <div class="terminal-line"><span class="success">✓</span> geolocator: ^10.0.0 configurado.</div>
+            <div class="terminal-line"><span class="success">✓</span> image_picker e geocoding injetados.</div>
+            <div class="terminal-line">$ abrindo canal de segurança try/catch...</div>
+            <div class="terminal-line"><span class="accent">&gt;</span> Status: <span class="accent" id="status-text">Inicializando...</span></div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/5586999883494" class="float-btn" target="_blank" title="WhatsApp do Professor">
+        <svg class="float-icon" viewBox="0 0 448 512">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.7 9.1 31.9 11.7 13.4 4.3 25.7 3.6 35.4 2.1 10.8-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+    </a>
+
+    <footer>
+        <p>Desenvolvido sob as diretrizes da Educação 5.0 por <a href="https://www.linkedin.com/in/luzardo-lustosa/" target="_blank">Prof. Luzardo Lustosa</a></p>
+    </footer>
+
+    <script>
+        const percentText = document.getElementById('percent-text');
+        const statusText = document.getElementById('status-text');
+        let progress = 0;
+
+        // Atualiza a numeração de texto de 0% a 100% ao longo dos 10 segundos
+        const interval = setInterval(() => {
+            progress++;
+            percentText.innerText = progress + '% Concluído';
+            
+            // Mudança dinâmica de status no console para simular atividade real
+            if (progress === 30) {
+                statusText.innerText = 'Injetando permissões no AndroidManifest...';
+            } else if (progress === 60) {
+                statusText.innerText = 'Preparando matriz de pixels com drawString()...';
+            } else if (progress === 85) {
+                statusText.innerText = 'Finalizando linkagem de hardware...';
+            }
+            
+            if (progress >= 100) {
+                clearInterval(interval);
+            }
+        }, 100); // 100ms * 100 interações = 10000ms (10 segundos)
+
+        // Executa o redirecionamento após os 10 segundos completos
+        setTimeout(() => {
+            // Caso sua página principal se chame 'principal.html', mude abaixo:
+            window.location.href = 'principal.html'; 
+        }, 10000);
+    </script>
+
+</body>
+</html>
