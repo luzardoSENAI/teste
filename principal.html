@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGE - Carregando Ambiente...</title>
+    <title>Projeto SGE - Sistema de Geolocalização Educacional</title>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,13 +11,18 @@
     
     <style>
         :root {
+            /* Paleta Modo Dark */
             --background: #0f172a; /* Slate 900 */
             --surface: #1e293b;    /* Slate 800 */
             --surface-card: #111827; /* Gray 900 */
             --border: #334155;     /* Slate 700 */
-            --primary: #3b82f6;    /* Azul Flutter */
+            
+            --primary: #3b82f6;    /* Azul brilhante para Dark */
             --primary-hover: #60a5fa;
-            --accent: #f59e0b;     /* Âmbar */
+            --success: #22c55e;
+            --accent: #f59e0b;
+            --linkedin-color: #0a66c2;
+            
             --text-main: #f8fafc;  /* Slate 50 */
             --text-muted: #94a3b8; /* Slate 400 */
             --code-bg: #020617;    /* Slate 950 */
@@ -29,151 +34,335 @@
             box-sizing: border-box;
         }
 
+        /* Estrutura para empurrar o rodapé para baixo naturalmente caso tenha pouco conteúdo */
+        html, body {
+            height: 100%;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background);
             color: var(--text-main);
-            min-height: 100vh;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
-        /* Container de Centralização */
-        .wrapper {
-            max-width: 650px;
-            margin: auto;
-            padding: 2rem 1.5rem;
-            text-align: center;
-        }
-
-        /* Branding SGE */
-        .brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
+        /* Header */
+        header {
             background-color: var(--surface);
-            padding: 0.5rem 1.25rem;
-            border-radius: 50px;
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prof-info h2 {
+            font-size: 1.1rem;
+            color: var(--primary-hover);
+            font-weight: 600;
+        }
+
+        .prof-info h1 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        /* Estilização do link de início na logo */
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .logo-link:hover {
+            opacity: 0.8;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Container Principal */
+        main {
+            max-width: 800px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1; 
+        }
+
+        /* Introdução e Conteúdo */
+        .intro-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            border-left: 5px solid var(--primary);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .intro-card h2 {
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            font-size: 1.6rem;
+        }
+
+        .intro-card p {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary-hover);
+            margin: 2.5rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-p {
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        .package-badge {
+            font-family: 'Fira Code', monospace;
+            background-color: #311515;
+            color: #fca5a5;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid #7f1d1d;
+        }
+
+        .code-inline {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--code-bg);
+            color: #cbd5e1;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
             border: 1px solid var(--border);
         }
 
-        .brand img {
-            width: 32px;
-            height: 32px;
+        /* Bloco de Atividades */
+        .activities-container {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
         }
 
-        .brand span {
-            font-weight: 700;
-            letter-spacing: 1px;
+        .activities-container h2 {
+            font-size: 1.6rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .activity-card {
+            background-color: var(--surface-card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent);
+            border-top: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .activity-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .activity-card h3 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+        }
+
+        .activity-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .activity-card strong {
             color: var(--primary-hover);
         }
 
-        /* Títulos Principais */
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            letter-spacing: -0.025em;
-            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .guiado-step {
+            margin-top: 1rem;
+            border-top: 1px dashed var(--border);
+            padding-top: 1rem;
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 2.5rem;
-        }
-
-        /* Caixa de Status - Terminal */
-        .terminal-box {
-            background-color: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.25rem;
-            text-align: left;
-            font-family: 'Fira Code', monospace;
+        .guiado-step h4 {
             font-size: 0.95rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-            margin-bottom: 2.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
         }
 
-        .terminal-header {
-            display: flex;
-            gap: 0.5rem;
+        .guiado-step ul {
+            margin-left: 1.2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Container do Código com botão estilo Notion */
+        .guiado-step pre {
+            background-color: var(--code-bg);
+            padding: 1.2rem 1rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            color: #e2e8f0;
+            border: 1px solid var(--border);
             margin-bottom: 1rem;
+            position: relative; /* Essencial para alinhar o botão dentro dele */
         }
 
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .dot-r { background-color: #ef4444; }
-        .dot-y { background-color: #eab308; }
-        .dot-g { background-color: #22c55e; }
-
-        .terminal-line {
-            color: #cbd5e1;
-            margin-bottom: 0.4rem;
+        /* Botão Copiar Estilo Notion */
+        .copy-code-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(51, 65, 85, 0.7); /* Slate 700 semi-transparente */
+            color: #94a3b8;
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            opacity: 0; /* Invisível por padrão (estilo Notion) */
+            transition: all 0.2s ease;
+            user-select: none;
         }
 
-        .terminal-line span.accent { color: var(--accent); }
-        .terminal-line span.success { color: #22c55e; }
-
-        /* Barra de Progresso Dinâmica */
-        .progress-container {
-            margin-bottom: 1.5rem;
+        /* Exibe o botão ao passar o mouse sobre o bloco de código */
+        .guiado-step pre:hover .copy-code-btn {
+            opacity: 1;
         }
 
-        .progress-label {
+        .copy-code-btn:hover {
+            background-color: var(--surface);
+            color: var(--text-main);
+            border-color: var(--primary);
+        }
+
+        .copy-code-btn.copied {
+            background-color: rgba(34, 197, 94, 0.2); /* Verde de sucesso */
+            color: #4ade80;
+            border-color: var(--success);
+        }
+
+        /* Rodapé */
+        footer {
+            width: 100%;
+            background-color: var(--code-bg);
+            padding: 1.5rem 1rem;
+            border-top: 1px solid var(--border);
+            margin-top: auto; 
+        }
+
+        .nav-footer {
+            max-width: 800px;
+            margin: 0 auto 1.2rem auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 0.5rem; 
+        }
+
+        .nav-btn {
+            background-color: var(--surface);
+            color: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 0.75rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .nav-btn-linkedin:hover {
+            background-color: var(--linkedin-color);
+            border-color: var(--linkedin-color);
+        }
+
+        .footer-credits {
+            text-align: center;
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 0.75rem;
         }
 
-        .progress-bar {
-            background-color: var(--surface);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .progress-fill {
-            background-color: var(--primary);
-            height: 100%;
-            width: 0%; /* Começa em 0 */
-            border-radius: 4px;
-            box-shadow: 0 0 12px var(--primary);
-            /* Animação de carregamento travada em exatamente 10 segundos linear */
-            animation: loadProgress 10s linear forwards, pulseGlow 2s infinite alternate;
-        }
-
-        /* Rodapé de Créditos */
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            border-top: 1px solid var(--border);
-            background-color: var(--surface-card);
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        footer a {
+        .footer-credits a {
             color: var(--primary-hover);
             text-decoration: none;
             font-weight: 500;
         }
 
-        footer a:hover {
+        .footer-credits a:hover {
             text-decoration: underline;
         }
 
         /* Botão Flutuante do WhatsApp */
         .float-btn {
             position: fixed;
-            bottom: 25px;
+            bottom: 25px; 
             right: 25px;
             border-radius: 50%;
             width: 56px;
@@ -187,55 +376,222 @@
             background-color: #25d366;
         }
 
-        .float-btn:hover { transform: scale(1.1); }
-        .float-icon { width: 30px; height: 30px; fill: #ffffff; }
-
-        /* Keyframes das Animações CSS */
-        @keyframes loadProgress {
-            from { width: 0%; }
-            to { width: 100%; }
+        .float-btn:hover {
+            transform: scale(1.1);
         }
 
-        @keyframes pulseGlow {
-            0% { opacity: 0.9; box-shadow: 0 0 8px var(--primary); }
-            100% { opacity: 1; box-shadow: 0 0 16px var(--primary); }
+        .float-icon {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+        }
+
+        /* Responsividade */
+        @media (max-width: 840px) {
+            .nav-footer {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            .nav-footer {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="wrapper">
-        <div class="brand">
-            <img src="logo.svg" alt="SGE Logo" onerror="this.style.display='none';">
-            <span>PROJETO SGE</span>
-        </div>
-
-        <h1>Compilando Ambiente...</h1>
-        <p class="subtitle">O Sistema de Geolocalização Educacional está preparando as ferramentas e dependências de hardware para a aula.</p>
-
-        <div class="progress-container">
-            <div class="progress-label">
-                <span>Instalando pacotes via pubspec.yaml</span>
-                <span id="percent-text">0% Concluído</span>
+    <header>
+        <div class="header-container">
+            <div class="prof-info">
+                <h2>Prof. Luzardo Lustosa</h2>
+                <h1>Criação de App de geolocalização com flutter</h1>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
+            <a href="index.html" class="logo-link">
+                <img class="logo-img" src="logo.svg" alt="SGE Logo" onerror="this.style.display='none';">
+                <span style="font-weight: 700; color: var(--primary-hover);">SGE</span>
+            </a>
         </div>
+    </header>
 
-        <div class="terminal-box">
-            <div class="terminal-header">
-                <div class="dot dot-r"></div>
-                <div class="dot dot-y"></div>
-                <div class="dot dot-g"></div>
+    <main>
+        <section class="intro-card">
+            <h2>Criando o App SGE (Sistema de Geolocalização Educacional)</h2>
+            <p>Bem-vindos ao Projeto SGE! Neste módulo, vamos dar um salto no desenvolvimento Flutter: sairemos apenas da criação de telas visuais e vamos começar a controlar o hardware do celular (Câmera e GPS) e a manipular arquivos reais.</p>
+            <p>O nosso grande desafio de hoje surge de um problema do mundo real: quando você tira uma foto e envia pelo WhatsApp ou redes sociais, esses aplicativos "espremem" (comprimem) a imagem para ela ficar mais leve. Nesse processo, eles apagam todos os dados ocultos da foto (como a localização de onde ela foi tirada) por questões de privacidade.</p>
+            <p>Para resolver isso e garantir que o endereço chegue ao destino, nós vamos criar uma marca d'água à prova de compressão.</p>
+        </section>
+
+        <section class="lesson-body">
+            <h2 class="section-title">1. Acessando o Mundo Físico (Câmera e GPS)</h2>
+            <p class="content-p">Para o nosso aplicativo funcionar, precisamos de pacotes externos que conversem com as peças físicas do celular:</p>
+            <p class="content-p">O <span class="package-badge">image_picker</span>: É a nossa ponte para a câmera. Com ele, ordenamos que o celular abra a câmera principal, tire uma foto e nos devolva um arquivo temporário na memória.</p>
+            <p class="content-p">O <span class="package-badge">geolocator</span>: É o nosso acesso à antena GPS. Ele funciona mesmo sem internet, lendo os satélites para nos dar os números exatos de Latitude e Longitude (ex: Lat: -23.55, Long: -46.63).</p>
+
+            <h2 class="section-title">2. O Motor de Busca e o Escudo do Try/Catch</h2>
+            <p class="content-p">Ter apenas os números da Latitude e Longitude não é muito amigável para ler. Por isso, usamos um terceiro pacote chamado <span class="package-badge">geocoding</span>, que pega esses números e vai até a internet procurar o nome da rua. Mas, e se o aluno estiver no meio do mato, sem 4G ou Wi-Fi? É aqui que entra a estrutura de segurança <span class="code-inline">try/catch</span> (Tentar / Capturar):</p>
+            <p class="content-p">O aplicativo tenta (<span class="code-inline">try</span>) acessar a internet para descobrir a rua.</p>
+            <p class="content-p">Se falhar (sem rede), ele não quebra o app. O erro cai na rede de segurança (<span class="code-inline">catch</span>), e nós programamos o app para ignorar a falha e usar apenas os números do GPS (Lat/Long), que foram capturados offline.</p>
+
+            <h2 class="section-title">3. A Mágica dos Pixels (A Marca D'água)</h2>
+            <p class="content-p">A parte mais importante do aplicativo! No Flutter, colocar um widget <span class="code-inline">Text</span> por cima de um widget <span class="code-inline">Image</span> é como colar um adesivo na tela da sua TV. Se você enviar a TV para alguém, o adesivo não vai junto com a fiação de dentro dela.</p>
+            <p class="content-p">Para a nossa marca d'água ser permanente, usamos o pacote <span class="package-badge">image</span>. Ele pega o arquivo da foto, transforma em uma matriz de milhões de pixels, e nós usamos o comando <span class="code-inline">drawString()</span> para pintar as letras da localização diretamente nos pixels da foto. Quando salvamos, o texto se funde à imagem para sempre!</p>
+        </section>
+
+        <section class="activities-container">
+            <h2>💻 Guia Prático de Atividades Passo a Passo</h2>
+            <p class="content-p" style="margin-bottom: 1.5rem;">Siga os roteiros estruturados abaixo para testar os recursos de hardware isoladamente no seu editor antes de montar o app SGE completo:</p>
+
+            <div class="activity-card">
+                <h3>Atividade 1: O Rastreador Simples (Treinando o GPS)</h3>
+                <p><strong>Desafio:</strong> Criar uma tela contendo um botão centralizado. Ao clicar nele, o hardware do GPS deve ser ativado para capturar e exibir as coordenadas de Latitude e Longitude em tempo real na tela.</p>
+                
+                <div class="guiado-step">
+                    <h4>Passo 1: Instalação</h4>
+                    <p>Adicione a dependência correta no seu arquivo <span class="code-inline">pubspec.yaml</span> abaixo de dependencies:</p>
+                    <pre>dependencies:
+  geolocator: ^13.0.0</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 2: Importação e Variáveis</h4>
+                    <p>No topo do seu arquivo <span class="code-inline">main.dart</span>, importe a biblioteca e defina a variável de texto que guardará os dados do GPS dentro do escopo do seu <span class="code-inline">State</span>:</p>
+                    <pre>import 'package:geolocator/geolocator.dart';
+
+// Variável para armazenar o texto exibido na tela
+String _textoGps = "Clique no botão para rastrear";</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 3: A Lógica de Captura</h4>
+                    <p>Crie o método assíncrono que solicita a permissão do usuário e faz a leitura física do satélite:</p>
+                    <pre>Future&lt;void&gt; _capturarCoordenadas() async {
+  // Solicita permissão de uso do GPS ao sistema operacional do celular
+  LocationPermission permissao = await Geolocator.requestPermission();
+  
+  if (permissao == LocationPermission.whileInUse || permissao == LocationPermission.always) {
+    // Captura a posição geográfica atual do hardware
+    Position posicao = await Geolocator.getCurrentPosition();
+    
+    // Atualiza o estado da tela para exibir os números
+    setState(() {
+      _textoGps = "Latitude: ${posicao.latitude}\nLongitude: ${posicao.longitude}";
+    });
+  }
+}</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 4: Como testar</h4>
+                    <ul>
+                        <li>Abra o emulador ou conecte seu celular físico.</li>
+                        <li>Clique no botão e **autorize o aplicativo** a acessar a localização.</li>
+                        <li>Verifique se os números de Latitude e Longitude aparecen na interface.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="terminal-line">$ flutter pub get</div>
-            <div class="terminal-line"><span class="success">✓</span> geolocator: ^10.0.0 configurado.</div>
-            <div class="terminal-line"><span class="success">✓</span> image_picker e geocoding injetados.</div>
-            <div class="terminal-line">$ abrindo canal de segurança try/catch...</div>
-            <div class="terminal-line"><span class="accent">&gt;</span> Status: <span class="accent" id="status-text">Inicializando...</span></div>
-        </div>
-    </div>
+
+            <div class="activity-card">
+                <h3>Atividade 2: Simulador de Apagão (Tratamento com Try/Catch)</h3>
+                <p><strong>Desafio:</strong> Modificar a lógica anterior adicionando a busca pelo nome da rua. Caso o dispositivo seja desconectado da rede Wi-Fi/4G, o aplicativo deve capturar o erro de conexão de forma segura e continuar rodando.</p>
+                
+                <div class="guiado-step">
+                    <h4>Passo 1: Instalação</h4>
+                    <p>Adicione o pacote responsável por transformar números em nomes de ruas no seu <span class="code-inline">pubspec.yaml</span>:</p>
+                    <pre>dependencies:
+  geocoding: ^3.0.0</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 2: Construindo o Escudo Try/Catch</h4>
+                    <p>Substitua a lógica de atualização incluindo a verificação online protegida por uma barreira antiqueda:</p>
+                    <pre>import 'package:geocoding/geocoding.dart';
+
+Future&lt;void&gt; _buscarEndereco(double lat, double long) async {
+  try {
+    // Bloco TRY: O app tenta buscar os dados na internet
+    List&lt;Placemark&gt; placemarks = await placemarkFromCoordinates(lat, long);
+    Placemark local = placemarks.first;
+    
+    setState(() {
+      _textoGps = "Rua: ${local.street}, ${local.subLocality}";
+    });
+  } catch (erro) {
+    // Bloco CATCH: Executado automaticamente se o celular estiver offline
+    setState(() {
+      _textoGps = "Sem internet! Coordenadas mantidas: Lat $lat, Long $long";
+    });
+  }
+}</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 4: Como testar</h4>
+                    <ul>
+                        <li>**Teste 1 (Online):** Clique no botão com a internet ligada. A interface deve exibir o nome da rua.</li>
+                        <li>**Teste 2 (Offline):** Desative o Wi-Fi e os dados móveis do seu computador/emulador e clique novamente. O app não pode travar, ele deve exibir a mensagem amigável definida no `catch`.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h3>Atividade 3: O Carimbo Digital (Pintando Pixels do Arquivo)</h3>
+                <p><strong>Desafio:</strong> Criar uma rotina em segundo plano capaz de abrir uma imagem da memória do celular, decodificar sua estrutura de bytes e rasterizar (desenhar) um texto definitivo por cima dela.</p>
+                
+                <div class="guiado-step">
+                    <h4>Passo 1: Instalação</h4>
+                    <p>Utilize a biblioteca pura de manipulação de dados de imagem no <span class="code-inline">pubspec.yaml</span>:</p>
+                    <pre>dependencies:
+  image: ^4.3.0</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 2: Lógica de Escrita em Bytes</h4>
+                    <p>Implemente a função que transforma o arquivo físico em uma matriz de pontos coloridos para realizar a pintura definitiva:</p>
+                    <pre>import 'package:image/image.dart' as img;
+import 'dart:io';
+
+Future&lt;void&gt; _aplicarCarimbo(File arquivoFotoOriginal) async {
+  // 1. Lê os bytes do arquivo e os converte em uma matriz de pixels manipulável
+  final bytes = await arquivoFotoOriginal.readAsBytes();
+  img.Image? imagemEmPixels = img.decodeImage(bytes);
+
+  if (imagemEmPixels != null) {
+    // 2. Desenha o carimbo de texto de forma definitiva diretamente na matriz
+    img.drawString(
+      imagemEmPixels,
+      "SGE - COORDENADA SEGURA",
+      font: img.arial24, // Define um tamanho de fonte legível
+      x: 30,             // Afastamento da borda esquerda (Eixo X)
+      y: 30,             // Afastamento do topo (Eixo Y)
+    );
+
+    // 3. Reconverte a matriz modificada de volta para o formato JPEG
+    final bytesProcessados = img.encodeJpg(imagemEmPixels);
+    
+    // 4. Salva por cima do arquivo antigo, mesclando o texto de forma permanente
+    await arquivoFotoOriginal.writeAsBytes(bytesProcessados);
+  }
+}</pre>
+                </div>
+
+                <div class="guiado-step">
+                    <h4>Passo 3: Como testar</h4>
+                    <ul>
+                        <li>Envie a foto gerada por essa função para outro dispositivo via chat de rede social.</li>
+                        <li>Mesmo que a rede reduza a qualidade do arquivo, o texto permanecerá legível, provando que ele agora faz parte dos pixels da imagem.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <a href="https://wa.me/5586999883494" class="float-btn" target="_blank" title="WhatsApp do Professor">
         <svg class="float-icon" viewBox="0 0 448 512">
@@ -244,39 +600,85 @@
     </a>
 
     <footer>
-        <p>Desenvolvido sob as diretrizes da Educação 5.0 por <a href="https://www.linkedin.com/in/luzardo-lustosa/" target="_blank">Prof. Luzardo Lustosa</a></p>
+        <nav class="nav-footer">
+            <a href="https://drive.google.com/file/d/13PdjLMxdu3volH5qWx6uOWht0aGXIy1N/view?usp=drive_link" target="_blank" class="nav-btn">
+                <svg class="btn-icon" viewBox="0 0 320 512">
+                    <path d="M272 0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h224c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zM160 480c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm112-108c0 6.6-5.4 12-12 12H60c-6.6 0-12-5.4-12-12V60c0-6.6 5.4-12 12-12h200c6.6 0 12 5.4 12 12v312z"/>
+                </svg>
+                Aplicativo
+            </a>
+            
+            <a href="projeto.html" class="nav-btn">
+                <svg class="btn-icon" viewBox="0 0 640 512">
+                    <path d="M172.5 131.1c-13.8-9.2-32.5-5.4-41.7 8.4L8.1 324.7c-10.8 16.2-10.8 37.5 0 53.7l122.7 185.1c9.2 13.8 27.9 17.6 41.7 8.4s17.6-27.9 8.4-41.7L71.8 351.5l109.1-178.6c9.2-13.8 5.4-32.5-8.4-41.7zm295 0c-13.8 9.2-17.6 27.9-8.4 41.7l109.1 178.6L459.1 530.1c-9.2 13.8-5.4 32.5 8.4 41.7s32.5 5.4 41.7-8.4l122.7-185.1c10.8-16.2 10.8-37.5 0-53.7L509.2 139.5c-9.2-13.8-27.9-17.6-41.7-8.4zm-143-85.3c-16.1 4-26.1 20.3-22.1 36.4l112 448c4 16.1 20.3 26.1 36.4 22.1s26.1-20.3 22.1-36.4l-112-448c-4-16.1-20.3-26.1-36.4-22.1z"/>
+                </svg>
+                Código
+            </a>
+            
+            <a href="https://www.linkedin.com/in/luzardo-lustosa/" target="_blank" class="nav-btn nav-btn-linkedin" style="text-decoration: none;">
+                <svg class="btn-icon" viewBox="0 0 448 512">
+                    <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/>
+                </svg>
+                LinkedIn
+            </a>
+
+            <a href="https://drive.google.com/file/d/1F4t5gfNaOGS0TlRuNTsndB7fV9fb5fxF/view?usp=drive_link" target="_blank" class="nav-btn">
+                <svg class="btn-icon" viewBox="0 0 448 512">
+                    <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C64.3 288 0 352.3 0 431.6V480c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32v-48.4c0-79.3-64.3-143.6-143.4-143.6z"/>
+                </svg>
+                Currículo
+            </a>
+            
+            <a href="https://drive.google.com/file/d/1s23EY6k909w4gVorESOshbpTFOk2_aVr/view?usp=drive_link" target="_blank" class="nav-btn">
+                <svg class="btn-icon" viewBox="0 0 384 512">
+                    <path d="M336 64h-80c0-35.3-28.7-64-64-64s-64 28.7-64 64H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM192 40c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zm112 256c0 6.6-5.4 12-12 12H92c-6.6 0-12-5.4-12-12v-24c0-6.6 5.4-12 12-12h200c6.6 0 12 5.4 12 12v24zm0-80c0 6.6-5.4 12-12 12H92c-6.6 0-12-5.4-12-12v-24c0-6.6 5.4-12 12-12h200c6.6 0 12 5.4 12 12v24zm0-80c0 6.6-5.4 12-12 12H92c-6.6 0-12-5.4-12-12v-24c0-6.6 5.4-12 12-12h200c6.6 0 12 5.4 12 12v24z"/>
+                </svg>
+                Plano de Aula
+            </a>
+        </nav>
+        
+        <div class="footer-credits">
+            Desenvolvido sob as diretrizes da Educação 5.0 por <a href="https://www.linkedin.com/in/luzardo-lustosa/" target="_blank">Prof. Luzardo Lustosa</a>
+        </div>
     </footer>
 
     <script>
-        const percentText = document.getElementById('percent-text');
-        const statusText = document.getElementById('status-text');
-        let progress = 0;
+        // Aguarda a página carregar por completo
+        document.addEventListener("DOMContentLoaded", function() {
+            // Seleciona todos os blocos de código ('pre') dentro das etapas guiadas
+            const blocosDeCodigo = document.querySelectorAll(".guiado-step pre");
 
-        // Atualiza a numeração de texto de 0% a 100% ao longo dos 10 segundos
-        const interval = setInterval(() => {
-            progress++;
-            percentText.innerText = progress + '% Concluído';
-            
-            // Mudança dinâmica de status no console para simular atividade real
-            if (progress === 30) {
-                statusText.innerText = 'Injetando permissões no AndroidManifest...';
-            } else if (progress === 60) {
-                statusText.innerText = 'Preparando matriz de pixels com drawString()...';
-            } else if (progress === 85) {
-                statusText.innerText = 'Finalizando linkagem de hardware...';
-            }
-            
-            if (progress >= 100) {
-                clearInterval(interval);
-            }
-        }, 100); // 100ms * 100 interações = 10000ms (10 segundos)
+            blocosDeCodigo.forEach((bloco) => {
+                // 1. Cria o elemento botão do HTML
+                const botao = document.createElement("button");
+                botao.className = "copy-code-btn";
+                botao.innerText = "Copiar";
 
-        // Executa o redirecionamento após os 10 segundos completos
-        setTimeout(() => {
-            // Caso sua página principal se chame 'principal.html', mude abaixo:
-            window.location.href = 'principal.html'; 
-        }, 10000);
+                // 2. Insere o botão criado no canto do bloco de código atual
+                bloco.appendChild(botao);
+
+                // 3. Monitora o clique no botão de copiar
+                botao.addEventListener("click", function() {
+                    // Seleciona apenas o texto do código (removendo o texto do próprio botão)
+                    let codigo = bloco.innerText.replace("Copiar", "").replace("Copiado!", "").trim();
+
+                    // Executa o comando nativo do navegador para copiar para a área de transferência
+                    navigator.clipboard.writeText(codigo).then(() => {
+                        // Altera o estilo e texto para indicar sucesso (estilo Notion/ChatGPT)
+                        botao.innerText = "Copiado!";
+                        botao.classList.add("copied");
+
+                        // Após 2 segundos, volta o botão ao estado padrão original
+                        setTimeout(() => {
+                            botao.innerText = "Copiar";
+                            botao.classList.remove("copied");
+                        }, 2000);
+                    }).catch(err => {
+                        console.error("Falha ao copiar código: ", err);
+                    });
+                });
+            });
+        });
     </script>
-
 </body>
 </html>
