@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto SGE - Guia de Desenvolvimento Técnico</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Paleta Modo Dark Oficial */
+      --background: #0f172a; /* Slate 900 */
+      --surface: #1e293b;    /* Slate 800 */
+      --surface-card: #111827; /* Gray 900 */
+      --border: #334155;     /* Slate 700 */
+
+      --primary: #3b82f6;    /* Azul brilhante para Dark */
+      --primary-hover: #60a5fa;
+      --success: #22c55e;
+      --accent: #f59e0b;
+      --linkedin-color: #0a66c2;
+
+      --text-main: #f8fafc;  /* Slate 50 */
+      --text-muted: #94a3b8; /* Slate 400 */
+      --code-bg: #020617;    /* Slate 950 */
+
+      /* Cores de Identificação de Linguagem (Estilo Notion) */
+      --dart-color: #00b4ab;  /* Cyan Dart */
+      --yaml-color: #cb5a5a;  /* Red/Coral */
+      --xml-color: #e28743;   /* Orange XML */
+      --flow-color: #a855f7;  /* Purple Fluxo */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Garante estrutura fluida empurrando o rodapé para a base naturalmente */
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Fixado na Parte Superior */
+    header {
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .prof-info h2 {
+      font-size: 1.1rem;
+      color: var(--primary-hover);
+      font-weight: 600;
+    }
+
+    .prof-info h1 {
+      font-size: 1.4rem;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .logo-placeholder {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+    }
+
+    /* Container de Conteúdo */
+    main {
+      max-width: 900px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+    }
+
+    /* Cartão de Destaque / Introdução */
+    .intro-card {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      border-left: 5px solid var(--primary);
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 2.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .intro-card h2 {
+      color: var(--text-main);
+      margin-bottom: 1rem;
+      font-size: 1.6rem;
+    }
+
+    .intro-card p {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Blocos de Conteúdo e Subtítulos */
+    .lesson-body {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      color: var(--primary-hover);
+      margin: 2rem 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .content-p {
+      color: #cbd5e1;
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+      text-align: justify;
+    }
+
+    ul {
+      list-style-position: inside;
+      margin-bottom: 1.5rem;
+      padding-left: 0.5rem;
+    }
+
+    li {
+      margin-bottom: 0.6rem;
+      color: #cbd5e1;
+    }
+
+    li strong {
+      color: var(--text-main);
+    }
+
+    /* Distintivos (Badges) e Elementos de Código inline */
+    .package-badge {
+      font-family: 'Fira Code', monospace;
+      background-color: #311515;
+      color: #fca5a5;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid #7f1d1d;
+    }
+
+    .code-inline {
+      font-family: 'Fira Code', monospace;
+      background-color: var(--code-bg);
+      color: #cbd5e1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+    }
+
+    /* Blocos de Código e Diagramas com Padrão Notion */
+    pre, .diagrama {
+      background-color: var(--code-bg);
+      padding: 2.2rem 1.2rem 1.2rem 1.2rem; /* Espaço para a barra superior do Notion */
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      margin: 1.5rem 0;
+      position: relative; /* Base para o alinhamento absoluto dos controles */
+    }
+
+    pre code, .diagrama {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    .diagrama {
+      white-space: pre-wrap;
+      color: var(--primary-hover);
+      border: 1px dashed var(--border);
+      line-height: 1.5;
+    }
+
+    /* Rótulo de Linguagem no canto superior esquerdo (Estilo Notion) */
+    pre::before, .diagrama::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 6px;
+      left: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      opacity: 0.5;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Cores personalizadas acesas no Hover */
+    pre[data-lang="dart"]:hover::before { color: var(--dart-color); opacity: 1; }
+    pre[data-lang="yaml"]:hover::before { color: var(--yaml-color); opacity: 1; }
+    pre[data-lang="xml"]:hover::before { color: var(--xml-color); opacity: 1; }
+    .diagrama[data-lang="fluxo"]:hover::before { color: var(--flow-color); opacity: 1; }
+
+    /* Bordas temáticas indicadoras de linguagem */
+    pre[data-lang="dart"] { border-left: 3px solid rgba(0, 180, 171, 0.3); }
+    pre[data-lang="yaml"] { border-left: 3px solid rgba(203, 90, 90, 0.3); }
+    pre[data-lang="xml"] { border-left: 3px solid rgba(226, 135, 67, 0.3); }
+    .diagrama[data-lang="fluxo"] { border-left: 3px solid rgba(168, 85, 247, 0.3); }
+
+    /* Botão Copiar Código - Estilo Notion */
+    .copy-code-btn {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background-color: rgba(51, 65, 85, 0.5);
+      color: #94a3b8;
+      border: 1px solid transparent;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      opacity: 0; /* Oculto por padrão */
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    /* Torna visíveis os cabeçalhos das caixas de código ao passar o mouse */
+    pre:hover .copy-code-btn, .diagrama:hover .copy-code-btn {
+      opacity: 1;
+    }
+    pre:hover::before, .diagrama:hover::before {
+      opacity: 0.8;
+    }
+
+    .copy-code-btn:hover {
+      background-color: var(--surface);
+      color: var(--text-main);
+      border-color: var(--border);
+    }
+
+    /* Estado de feedback de sucesso */
+    .copy-code-btn.copied {
+      background-color: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    /* Caixa de Alerta Pedagógico (Dica do Professor) */
+    blockquote {
+      background-color: var(--surface-card);
+      border-left: 4px solid var(--accent);
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin: 2rem 0;
+    }
+
+    blockquote p {
+      margin-bottom: 0;
+      font-style: italic;
+      color: #cbd5e1;
+    }
+
+    /* Rodapé Unificado */
+    footer {
+      background-color: var(--code-bg);
+      padding: 1.5rem;
+      z-index: 99;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .nav-footer {
+      max-width: 800px;
+      margin: 0 auto 1.2rem auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      background-color: var(--surface);
+      color: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 0.75rem 0.5rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .nav-btn-linkedin:hover {
+      background-color: var(--linkedin-color);
+      border-color: var(--linkedin-color);
+    }
+
+    .footer-credits {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 0.75rem;
+    }
+
+    .footer-credits a {
+      color: var(--primary-hover);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-credits a:hover {
+      text-decoration: underline;
+    }
+
+    /* Botão Flutuante do WhatsApp */
+    .float-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 101;
+      transition: transform 0.2s ease;
+      background-color: #25d366;
+    }
+
+    .float-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .float-icon {
+      width: 32px;
+      height: 32px;
+      fill: #ffffff;
+    }
+
+    /* Responsividade */
+    @media (max-width: 840px) {
+      .nav-footer {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .nav-footer {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+         /* Estilização do link de início na logo */
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+    }
+  </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="prof-info">
+                <h2>Prof. Luzardo Lustosa</h2>
+                <h1>Criação de App de geolocalização com flutter</h1>
+            </div>
+            <a href="index.html" class="logo-link">
+                <img class="logo-img" src="logo.svg" alt="SGE Logo" onerror="this.style.display='none';">
+                <span style="font-weight: 700; color: var(--primary-hover);">SGE</span>
+            </a>
+        </div>
+    </header>
+
+  <main>
+    <section class="intro-card">
+      <h2>Guia Prático: Código & Arquitetura SGE</h2>
+      <p>Este material concentra as etapas necessárias para unificar a captura fotográfica nativa do dispositivo, a extração de dados espaciais via antenas de posicionamento (GPS) e a persistência em banco local.</p>
+      <p>O foco principal está na manipulação direta dos dados primitivos da imagem na memória para a gravação indestrutível de marca d'água estruturada.</p>
+    </section>
+
+    <section class="lesson-body">
+      <h2 class="section-title">1. Configuração do Arquivo de Dependências</h2>
+      <p class="content-p">Abra seu arquivo <span class="code-inline">pubspec.yaml</span> localizado na raiz do projeto Flutter e adicione as bibliotecas abaixo na seção de dependências. Elas atuam mapeando os canais de mensagens com o hardware nativo do sistema operacional:</p>
+
+      <pre data-lang="yaml"><code>dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.10.6              # Controle nativo dos sensores de câmera
+  geolocator: ^13.0.1          # Gerenciador de conexão com satélite GPS
+  geocoding: ^3.0.0            # Mecanismo de Geocodificação Reversa (Mapeia Coordenadas para Endereço)
+  image: ^4.3.0                # Processador e decodificador binário de pixels
+  path_provider: ^2.1.3        # Localizador de diretórios seguros do sistema de arquivos
+  shared_preferences: ^2.2.3   # Persistência de dados local leve em formato chave-valor</code></pre>
+
+      <h2 class="section-title">2. Manifesto e Liberação de Recursos Android</h2>
+      <p class="content-p">Para que o barramento de segurança do Android libere a energia e o uso dos sensores físicos, abra o arquivo <span class="code-inline">android/app/src/main/AndroidManifest.xml</span>. Adicione os metadados de requisição de hardware antes da tag de fechamento do bloco principal:</p>
+
+      <pre data-lang="xml"><code>&lt;uses-permission android:name="android.permission.CAMERA" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /&gt;
+&lt;uses-permission android:name="android.permission.INTERNET" /&gt;</code></pre>
+
+      <h2 class="section-title">3. Ciclo de Fluxo de Conversação Estrutural</h2>
+      <p class="content-p">Entender como as camadas operacionais trocam pacotes estruturados é vital para depurar problemas de concorrência ou timeout de hardware:</p>
+
+      <div class="diagrama" data-lang="fluxo">1. O main.dart pede permissão de hardware ao Android (através do AndroidManifest).
+2. O sistema operacional Android autoriza o acesso aos sensores físicos (Câmera/GPS).
+3. O framework Flutter intercepta a imagem capturada e extrai os metadados.
+4. A biblioteca gráfica 'image' recebe a imagem na memória e substitui as cores dos pixels.
+5. O pacote 'path_provider' aponta a pasta segura e grava a imagem permanentemente em disco.
+6. A string contendo o endereço exato do disco é injetada e gravada no 'shared_preferences'.</div>
+
+      <h2 class="section-title">4. Anatomia e Divisão da Lógica Gráfica</h2>
+      <p class="content-p">A estrutura do arquivo fonte centraliza o controle de estado e telas em quatro blocos lógicos principais:</p>
+      <ul>
+        <li><strong>SplashScreen:</strong> Carregamento síncrono e identidade visual do software por meio de animação base de progresso linear.</li>
+        <li><strong>HistoricoScreen:</strong> GridView dinâmico de duas colunas que lê o armazenamento persistente em busca de arquivos JPEG válidos salvos.</li>
+        <li><strong>VisualizarFotoScreen:</strong> Componente adaptável com suporte a escala multiplicativa de toque, focado na leitura detalhada da marca aplicada.</li>
+        <li><strong>CameraSgeScreen:</strong> Motor assíncrono que renderiza a visualização da câmera e executa a limpeza de caracteres gráficos não interpretáveis pela fonte bitmap antes de aplicar os métodos <span class="code-inline">fillRect()</span> e <span class="code-inline">drawString()</span>.</li>
+      </ul>
+
+      <blockquote>
+        <p><strong>💡 Alerta Pedagógico ("A Tatuagem de Pixels"):</strong> O texto é desenhado diretamente nos bytes binários. Diferente de elementos comuns de interface (Widgets), a fusão dos dados gera um novo arquivo final. Ao transferir este arquivo por qualquer canal, as marcas geográficas permanecem protegidas contra perdas por compressão.</p>
+      </blockquote>
+
+      <h2 class="section-title">5. Arquivo Principal de Implementação (lib/main.dart)</h2>
+      <p class="content-p">Abaixo está disponibilizado o código técnico estável com verificações assíncronas de ciclo de vida e montagem preventiva:</p>
+
+      <pre data-lang="dart"><code>import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_plus/share_plus.dart';
+
+late List&lt;CameraDescription&gt; _cameras;
+
+Future&lt;void&gt; main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  _cameras = await availableCameras().catchError((e) => &lt;CameraDescription&gt;[]);
+  runApp(const SgeApp());
+}
+
+class SgeApp extends StatelessWidget {
+  const SgeApp({super.key});
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'Projeto SGE',
+    theme: ThemeData(primarySwatch: Colors.blue, brightness: Brightness.dark),
+    home: const SplashScreen(),
+  );
+}
+
+// ==========================================
+// TELA DE ABERTURA (SPLASH SCREEN)
+// ==========================================
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+  @override
+  State&lt;SplashScreen&gt; createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoricoScreen()));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.map, size: 100, color: Colors.blueAccent),
+          const SizedBox(height: 30),
+          const Text("SGE - Sistema de Geolocalização", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 50),
+          const SizedBox(width: 200, child: LinearProgressIndicator(backgroundColor: Colors.white24, valueColor: AlwaysStoppedAnimation(Colors.blueAccent))),
+        ],
+      ),
+    ),
+  );
+}
+
+// ==========================================
+// TELA DE HISTÓRICO (SELEÇÃO MÚLTIPLA)
+// ==========================================
+class HistoricoScreen extends StatefulWidget {
+  const HistoricoScreen({super.key});
+  @override
+  State&lt;HistoricoScreen&gt; createState() => _HistoricoScreenState();
+}
+
+class _HistoricoScreenState extends State<HistoricoScreen> {
+  List&lt;String&gt; _fotosSalvas = [];
+  final Set&lt;String&gt; _selecionados = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarHistorico();
+  }
+
+  Future&lt;void&gt; _carregarHistorico() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _fotosSalvas = prefs.getStringList('historico_fotos') ?? [];
+      _selecionados.clear();
+    });
+  }
+
+  void _alternarSelecao(String path) => setState(() => _selecionados.contains(path) ? _selecionados.remove(path) : _selecionados.add(path));
+
+  Future&lt;void&gt; _deletarSelecionados() async {
+    final confirmar = await showDialog&lt;bool&gt;(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Deletar ${_selecionados.length} foto(s)?"),
+        content: const Text("Esta ação apagará permanentemente os arquivos."),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("CANCELAR")),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("DELETAR", style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+
+    if (confirmar == true) {
+      final prefs = await SharedPreferences.getInstance();
+      for (var path in _selecionados) {
+        await File(path).delete().catchError((_){});
+        _fotosSalvas.remove(path);
+      }
+      await prefs.setStringList('historico_fotos', _fotosSalvas);
+      _carregarHistorico();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ativo = _selecionados.isNotEmpty;
+    return Scaffold(
+      appBar: AppBar(
+        leading: ativo ? IconButton(icon: const Icon(Icons.close), onPressed: () => setState(() => _selecionados.clear())) : const Icon(Icons.map, color: Colors.blueAccent),
+        title: Text(ativo ? "${_selecionados.length} selecionadas" : 'SGE - Histórico'),
+        actions: ativo ? [
+          IconButton(icon: const Icon(Icons.share, color: Colors.blueAccent), onPressed: () => Share.shareXFiles(_selecionados.map((p) => XFile(p)).toList())),
+          IconButton(icon: const Icon(Icons.delete, color: Colors.redAccent), onPressed: _deletarSelecionados),
+        ] : [],
+      ),
+      body: _fotosSalvas.isEmpty
+          ? const Center(child: Text("Nenhuma foto capturada ainda."))
+          : GridView.builder(
+        padding: const EdgeInsets.all(8),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 8, mainAxisSpacing: 8),
+        itemCount: _fotosSalvas.length,
+        itemBuilder: (context, idx) {
+          final path = _fotosSalvas[idx];
+          final isSel = _selecionados.contains(path);
+          return GestureDetector(
+            onTap: () => ativo ? _alternarSelecao(path) : Navigator.push(context, MaterialPageRoute(builder: (_) => VisualizarFotoScreen(path: path))).then((_) => _carregarHistorico()),
+            onLongPress: () => _alternarSelecao(path),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Opacity(opacity: isSel ? 0.5 : 1.0, child: Image.file(File(path), fit: BoxFit.cover)),
+                  if (isSel) Container(color: Colors.blueAccent.withOpacity(0.3), child: const Icon(Icons.check_circle, color: Colors.white, size: 40)),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: ativo ? null : FloatingActionButton(
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CameraSgeScreen())).then((_) => _carregarHistorico()),
+        child: const Icon(Icons.camera_alt),
+      ),
+    );
+  }
+}
+
+// ==========================================
+// TELA DE VISUALIZAÇÃO INDIVIDUAL
+// ==========================================
+class VisualizarFotoScreen extends StatelessWidget {
+  final String path;
+  const VisualizarFotoScreen({super.key, required this.path});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: Colors.black,
+    appBar: AppBar(backgroundColor: Colors.black, actions: [IconButton(icon: const Icon(Icons.share), onPressed: () => Share.shareXFiles([XFile(path)]))]),
+    body: Center(child: InteractiveViewer(child: Image.file(File(path)))),
+  );
+}
+
+// ==========================================
+// TELA DA CÂMERA E GEOLOCALIZAÇÃO
+// ==========================================
+class CameraSgeScreen extends StatefulWidget {
+  const CameraSgeScreen({super.key});
+  @override
+  State&lt;CameraSgeScreen&gt; createState() => _CameraSgeScreenState();
+}
+
+class _CameraSgeScreenState extends State<CameraSgeScreen> {
+  CameraController? _controller;
+  bool _estaProcessando = false;
+  String _enderecoAtual = "Buscando endereço...", _coordsAtuais = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _inicializarCamera();
+    _obterLocalizacao();
+  }
+
+  Future&lt;void&gt; _inicializarCamera() async {
+    if (_cameras.isEmpty) return;
+    _controller = CameraController(_cameras[0], ResolutionPreset.high, enableAudio: false);
+    await _controller!.initialize().then((_) { if (mounted) setState(() {}); }).catchError((_){});
+  }
+
+  Future&lt;void&gt; _obterLocalizacao() async {
+    try {
+      if (await Geolocator.checkPermission() == LocationPermission.denied) await Geolocator.requestPermission();
+      Position pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high, timeLimit: const Duration(seconds: 10));
+      setState(() => _coordsAtuais = "Lat: ${pos.latitude.toStringAsFixed(6)} | Long: ${pos.longitude.toStringAsFixed(6)}");
+      List&lt;Placemark&gt; p = await placemarkFromCoordinates(pos.latitude, pos.longitude);
+      if (p.isNotEmpty) setState(() => _enderecoAtual = "${p.first.street}, ${p.first.subLocality ?? ""} - ${p.first.administrativeArea}");
+    } catch (_) {
+      setState(() => _enderecoAtual = "Localização indisponível");
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  String _removerAcentos(String text) => text.replaceAll(RegExp(r'[àáâãäåÀÁÂÃÄÅ]'), 'A').replaceAll(RegExp(r'[èéêëÈÉÊË]'), 'E').replaceAll(RegExp(r'[òóôõöÒÓÔÕÖ]'), 'O').replaceAll(RegExp(r'[ùúûüÙÚÛÜ]'), 'U').replaceAll(RegExp(r'[çÇ]'), 'C');
+
+  Future&lt;void&gt; _capturarEProcessar() async {
+    if (_controller == null || !_controller!.value.isInitialized) return;
+    setState(() => _estaProcessando = true);
+
+    try {
+      final XFile foto = await _controller!.takePicture();
+      img.Image? imagem = img.decodeImage(await File(foto.path).readAsBytes());
+
+      if (imagem != null) {
+        List&lt;String&gt; linhas = [_removerAcentos(_coordsAtuais), _removerAcentos(_enderecoAtual)];
+        int rectHeight = (linhas.length * 50) + 35;
+
+        img.fillRect(imagem, x1: 0, y1: imagem.height - rectHeight, x2: imagem.width, y2: imagem.height, color: img.ColorRgba8(0, 0, 0, 200));
+        for (int i = 0; i < linhas.length; i++) {
+          img.drawString(imagem, linhas[i], font: img.arial24, x: 25, y: (imagem.height - rectHeight + 20) + (i * 50), color: img.ColorRgb8(255, 255, 255));
+        }
+
+        final path = "${(await getApplicationDocumentsDirectory()).path}/SGE_${DateTime.now().millisecondsSinceEpoch}.jpg";
+        await File(path).writeAsBytes(img.encodeJpg(imagem, quality: 90));
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setStringList('historico_fotos', (prefs.getStringList('historico_fotos') ?? [])..insert(0, path));
+        if (mounted) Navigator.pop(context);
+      }
+    } catch (_) {} finally {
+      if (mounted) setState(() => _estaProcessando = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_controller == null || !_controller!.value.isInitialized) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(child: CameraPreview(_controller!)),
+          Positioned(
+            bottom: 120, left: 20, right: 20,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(10)),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                Text(_coordsAtuais, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                Text(_enderecoAtual, style: const TextStyle(color: Colors.white)),
+              ]),
+            ),
+          ),
+          if (_estaProcessando) Container(color: Colors.black54, child: const Center(child: CircularProgressIndicator())),
+          Positioned(bottom: 40, left: 0, right: 0, child: Center(child: FloatingActionButton(backgroundColor: Colors.redAccent, onPressed: _estaProcessando || _coordsAtuais.isEmpty ? null : _capturarEProcessar, child: const Icon(Icons.camera)))),
+          Positioned(top: 40, left: 10, child: BackButton(onPressed: () => Navigator.pop(context))),
+        ],
+      ),
+    );
+  }
+}</code></pre>
+    </section>
+  </main>
+
+  <a href="https://wa.me/5586999883494" class="float-btn" target="_blank" title="WhatsApp do Professor">
+    <svg class="float-icon" viewBox="0 0 448 512">
+      <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.7 9.1 31.9 11.7 13.4 4.3 25.7 3.6 35.4 2.1 10.8-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+    </svg>
+  </a>
+
+  <footer>
+    <nav class="nav-footer">
+      <a href="https://drive.google.com/file/d/13PdjLMxdu3volH5qWx6uOWht0aGXIy1N/view?usp=drive_link" target="_blank" class="nav-btn">Aplicativo</a>
+      <a href="projeto.html" class="nav-btn">Código</a>
+      <a href="https://www.linkedin.com/in/luzardo-lustosa/" target="_blank" class="nav-btn nav-btn-linkedin">LinkedIn</a>
+      <a href="https://drive.google.com/file/d/1F4t5gfNaOGS0TlRuNTsndB7fV9fb5fxF/view?usp=drive_link" target="_blank" class="nav-btn">Currículo</a>
+      <a href="https://drive.google.com/file/d/1s23EY6k909w4gVorESOshbpTFOk2_aVr/view?usp=drive_link" target="_blank" class="nav-btn">Plano de Aula</a>
+    </nav>
+    <div class="footer-credits">
+      Desenvolvido sob as diretrizes da Educação 5.0 por <a href="https://www.linkedin.com/in/luzardo-lustosa/" target="_blank">Prof. Luzardo Lustosa</a>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Captura tanto os blocos 'pre' quanto os blocos '.diagrama'
+      const elementosCodigo = document.querySelectorAll("pre, .diagrama");
+
+      elementosCodigo.forEach((elemento) => {
+        // Fallback caso esqueça de marcar a linguagem em algum bloco novo
+        if (!elemento.hasAttribute("data-lang")) {
+          elemento.setAttribute("data-lang", "code");
+        }
+
+        // Instancia o botão dinâmico
+        const botao = document.createElement("button");
+        botao.className = "copy-code-btn";
+        botao.innerText = "Copiar";
+        elemento.appendChild(botao);
+
+        botao.addEventListener("click", function() {
+          // Limpa as strings fixas de cabeçalho para obter o código bruto puro
+          let codigoLimpo = elemento.innerText.replace("Copiar", "").replace("Copiado!", "").trim();
+
+          // Copia nativamente para a área de transferência do computador do aluno
+          navigator.clipboard.writeText(codigoLimpo).then(() => {
+            botao.innerText = "Copiado!";
+            botao.classList.add("copied");
+
+            // Reseta para o estado visual inicial após 2 segundos
+            setTimeout(() => {
+              botao.innerText = "Copiar";
+              botao.classList.remove("copied");
+            }, 2000);
+          }).catch(err => {
+            console.error("Erro ao transferir dados: ", err);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
